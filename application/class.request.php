@@ -18,12 +18,13 @@ class Request{
 				$this->phpalert->add($fh->errorInfo()->msg, 'failure');
 				self::navigateToUrl('/');
 			} else{
-				include_once $this->src.'class.datathinker.php';
+				include_once $this->src.'class.floodfinder.php';
 
-				$dt = new DataThinker();
-				$dt->calculate($fh->getFileData());
+				$ff = new FloodFinder($fh->getFileData());
 				echo '<pre>';
-				print_r($dt->getResult());
+				print_r($fh->getFileData());
+				print_r($ff->_get('maps'));
+				print_r($ff->_get('results'));
 				echo '</pre>';
 			}
 		}
@@ -35,7 +36,7 @@ class Request{
 		ob_start();
 
 		try{
-			include_once $this->src.'views/form.php';
+			include_once $this->src.'views/view.form.php';
 		} catch(Exception $ex){
 			echo 'There was an internal server error, please try again later. - ERROR INFO: '.$ex->getMessage() . '. In ' . $ex->getFile() . ' on line ' . $ex->getLine() . '.';
 		}

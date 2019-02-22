@@ -33,7 +33,7 @@ class FileHandler{
 
 			$data[] = (object) [
 				'length' => $fdata[$i],
-				'struct' => explode(' ', $fdata[$next])
+				'data' => explode(' ', $fdata[$next])
 			];
 			$i = $next;
 		}
@@ -45,6 +45,11 @@ class FileHandler{
 
 	public function getFileData(){
 		return $this->fileResult;
+	}
+
+	public function createFile($data, $save = false, $filePath = null){
+
+
 	}
 
 	public function errorInfo(){
