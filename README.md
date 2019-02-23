@@ -63,7 +63,7 @@ Put all contents of this application inside directory at the path indicated in s
 
 Access address specified at server block's **server_name** and you must see a screen like this:
 
-![sample-screen.png](https://bitbucket.org/repo/p6xdM7/images/2318018827-oxylogo.png)
+![sample-screen.png](https://raw.githubusercontent.com/gabriel-guelfi/alagamento-silhuetas/master/application/views/media/img/sample-screen.png)
 
 
 ### Who am i? ###
