@@ -14,16 +14,22 @@ class Request{
 	}
 
 	private function __construct(){
+		session_start();
 		$this->src = $_SERVER['DOCUMENT_ROOT'].'/application/';
 
 		include_once $_SERVER['DOCUMENT_ROOT'].'/utils/phpalert/class.phpalert.php';
 		$this->phpalert = new PHPAlert('/utils');
 
+
+
 		if(isset($_GET['execute'])){
 			$this->execute();
 		}
-
-		else $this->showForm();
+		else{
+			$this->showView('top');
+			$this->showView('home');
+			$this->showView('footer');
+		} 
 	}
 
 	private function __clone(){
@@ -34,11 +40,11 @@ class Request{
 
 	}
 
-	private function showForm(){
+	public function showView($viewname){
 		ob_start();
 
 		try{
-			include_once $this->src.'views/view.form.php';
+			include_once $this->src.'views/view.'.$viewname.'.php';
 		} catch(Exception $ex){
 			echo 'There was an internal server error, please try again later. - ERROR INFO: '.$ex->getMessage() . '. In ' . $ex->getFile() . ' on line ' . $ex->getLine() . '.';
 		}
@@ -59,20 +65,29 @@ class Request{
 			include_once $this->src.'class.floodfinder.php';
 
 			$ff = new FloodFinder($fh->getFileData());
-			if(isset($_POST['directdownload'])){
+			switch($_POST['output-option']){
+				case '1':
 				if(!$fh->createFile($ff->_get('results'))){
 					$this->phpalert->add("Failure! The response file could not be created.", 'failure');
 					self::navigateToUrl('/');
 				}
-			}else{
+				break;
+
+				case '2':
 				$date = date('m-d-Y h:i:s');
 				if($fh->createFile($ff->_get('results'), $this->src.'responses/', 'Response - '.$date.'.txt')){
 					$this->phpalert->add('Success! Response file path: '.$this->src.'responses/Response - '.$date.'.txt', 'success');
 				} else{
 					$this->phpalert->add("Failure! The response file could not be created.", 'failure');
 				}
-				
+
 				self::navigateToUrl('/');
+				break;
+				case '3':
+				$_SESSION['response-data'] = $ff->_get('results');
+				$this->phpalert->add('Success! Response for input dataset is shown below.', 'success');
+				self::navigateToUrl('/');
+				break;
 			}
 		}
 	}
