@@ -4,9 +4,12 @@ This tool predicts total areas that would be flooded, based on a 2D silhouettes 
 
 File's content format must follow this rules:
 
-First line: An integer that represents the quantity of cases to be analized.
-Secong line: A blank space or an intenger that represents the length of the matrix, in other words, the number of silhouttes of the case.
-Third line: A blank space or a sequence of integers separated by blank spaces. Each integer represents the height of the silhouette.
+- First line: An integer that represents the quantity of cases to be analized.
+
+- Secong line: A blank space or an intenger that represents the length of the matrix, in other words, the number of silhouttes of the case.
+
+- Third line: A blank space or a sequence of integers separated by blank spaces. Each integer represents the height of the silhouette.
+
 You can repeat lines 2 and 3 for each case you want to include in the calculation.
 
 
