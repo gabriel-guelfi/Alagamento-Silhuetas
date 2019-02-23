@@ -47,9 +47,45 @@ class FileHandler{
 		return $this->fileResult;
 	}
 
-	public function createFile($data, $save = false, $filePath = null){
+	public function createFile($data, $fileDir = null, $fileName = null){
+		$filedata = "";
+		foreach($data as $d){
+			$filedata .= $d.self::lineBreak().self::lineBreak();
+		}
 
+		if(!empty($fileDir) && !empty($fileName)){
+			return $this->writeFile($fileDir, $fileName, $filedata);
+		} else{
+			try{
+				header('Content-Disposition: attachment; filename="Response - '.date('m-d-Y h:i:s').'.txt"');
+				header('Content-Type: text/plain');
+				header('Content-Length: ' . strlen($filedata));
+				header('Connection: close');
 
+				echo $filedata;	
+			} catch(Exception $ex){
+				return false;
+			}
+			
+			return true;
+		}
+	}
+
+	private function writeFile($dirpath, $filename, $filecontent){
+		if (!file_exists($dirpath)){
+			mkdir($dirpath, 0755, true);
+			touch($dirpath . "../");
+			chmod($dirpath . "../", 0755);
+		}
+		touch($dirpath);
+		chmod($dirpath, 0755);
+
+		if(file_put_contents($dirpath.$filename, $filecontent)){
+			touch($dirpath.$filename);
+			chmod($dirpath.$filename, 0644);
+
+			return true;
+		} else return false;
 	}
 
 	public function errorInfo(){

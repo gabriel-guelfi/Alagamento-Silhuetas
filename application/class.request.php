@@ -3,33 +3,35 @@
 class Request{
 	private $src;
 	private $phpalert;
+	private static $instance;
 
-	public function __construct(){
+	public static function getInstance(){
+		if(self::$instance === null){
+			self::$instance = new self;
+		}
+
+		return self::$instance;
+	}
+
+	private function __construct(){
 		$this->src = $_SERVER['DOCUMENT_ROOT'].'/application/';
 
 		include_once $_SERVER['DOCUMENT_ROOT'].'/utils/phpalert/class.phpalert.php';
 		$this->phpalert = new PHPAlert('/utils');
 
 		if(isset($_GET['execute'])){
-			include_once $this->src.'class.filehandler.php';
-
-			$fh = new FileHandler($_FILES, 'file', 'txt');
-			if($fh->errorInfo()->status){
-				$this->phpalert->add($fh->errorInfo()->msg, 'failure');
-				self::navigateToUrl('/');
-			} else{
-				include_once $this->src.'class.floodfinder.php';
-
-				$ff = new FloodFinder($fh->getFileData());
-				echo '<pre>';
-				print_r($fh->getFileData());
-				print_r($ff->_get('maps'));
-				print_r($ff->_get('results'));
-				echo '</pre>';
-			}
+			$this->execute();
 		}
 
 		else $this->showForm();
+	}
+
+	private function __clone(){
+		
+	}
+
+	private function __wakeup(){
+
 	}
 
 	private function showForm(){
@@ -44,6 +46,35 @@ class Request{
 		echo ob_get_clean();
 
 		$this->phpalert->show();
+	}
+
+	private function execute(){
+		include_once $this->src.'class.filehandler.php';
+
+		$fh = new FileHandler($_FILES, 'file', 'txt');
+		if($fh->errorInfo()->status){
+			$this->phpalert->add($fh->errorInfo()->msg, 'failure');
+			self::navigateToUrl('/');
+		} else{
+			include_once $this->src.'class.floodfinder.php';
+
+			$ff = new FloodFinder($fh->getFileData());
+			if(isset($_POST['directdownload'])){
+				if(!$fh->createFile($ff->_get('results'))){
+					$this->phpalert->add("Failure! The response file could not be created.", 'failure');
+					self::navigateToUrl('/');
+				}
+			}else{
+				$date = date('m-d-Y h:i:s');
+				if($fh->createFile($ff->_get('results'), $this->src.'responses/', 'Response - '.$date.'.txt')){
+					$this->phpalert->add('Success! Response file path: '.$this->src.'responses/Response - '.$date.'.txt', 'success');
+				} else{
+					$this->phpalert->add("Failure! The response file could not be created.", 'failure');
+				}
+				
+				self::navigateToUrl('/');
+			}
+		}
 	}
 
 	public static function navigateToUrl($url, $useHeader = false){

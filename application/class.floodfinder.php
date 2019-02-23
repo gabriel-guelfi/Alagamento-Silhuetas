@@ -15,7 +15,8 @@ class FloodFinder{
 			$map = $this->createMap($d->data);
 			$this->maps[] = $map;
 
-			$this->results[] = $this->findFloods($map, $d->data);
+			$initY = (max($d->data) - $d->data[0]);
+			$this->results[] = $this->findFloods($map, $d->data, $initY, 0);
 		}
 	}
 
@@ -44,40 +45,36 @@ class FloodFinder{
 		return $map;
 	}
 
-	private function findFloods($map, $mtx){
-		return $this->lambdaSearch($map, $mtx, (max($mtx) - $mtx[0]), 0);
-		
-	}
+	private function findFloods($map, $mtx, $y, $x){
+		$height = max($mtx);
 
-	private function lambdaSearch($map, $mtx, $y, $x, $floods = 0, $return = true){
-		$tmp = 0;
-		echo'['.$y.', '.$x.']<br>';
-
-		if(isset($map[$y][$x+1])){
-			if($map[$y][$x+1]){
-				$x++;
-				$y = (max($mtx) - $mtx[$x]);
-				echo 'muda x';
-				$this->lambdaSearch($map, $mtx, $y, $x, $floods, false);
-			} else{
-				for($_x = $x+1; $_x < count($map[$y]); $_x++){
-					if($map[$y][$_x]){
-						$y++;
-						echo 'muda y';
-						$floods += $this->lambdaSearch($map, $mtx, $y, $x, $floods, false);
-
-						break;
-					}
-
-					$tmp++;
+		$floods = 0;
+		for($y; $y < $height; $y++){
+			if(isset($map[$y][$x+1])){
+				if($map[$y][$x+1]){
+					$y = ($height - $mtx[$x+1]) - 1;
+					$x++;
+					continue;
 				}
+
+				$floods += $this->countRowFlood(($x+1), $map[$y]);
 			}
 		}
 
-		if($return)
-			return $floods;
-		else
-			return $tmp;
+		return $floods;
+		
+	}
+
+	private function countRowFlood($init, $mapRow){
+		$tmp = 0;
+		for($i = $init; $i < count($mapRow); $i++){
+			if($mapRow[$i]){
+				return $tmp;
+			}
+			$tmp++;
+		}
+
+		return 0;
 	}
 
 	public function _get($varname){
