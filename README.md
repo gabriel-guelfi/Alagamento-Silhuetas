@@ -51,7 +51,7 @@ server {
         }
 }
 ```
-**PS:** Remenber to change **server_name**, **root** and the php's fpm to suit your needs.
+**PS:** Remenber to change **server_name**, **root** and the **php's fpm** to suit your needs.
 
 
 **> Root directory:**
@@ -61,9 +61,9 @@ Put all contents of this application inside directory at the path indicated in s
 
 **> Done!**
 
-Access address specified at server block's **server_name** and you must see this screen:
+Access address specified at server block's **server_name** and you must see a screen like this:
 
-![oxylogo.png](https://bitbucket.org/repo/p6xdM7/images/2318018827-oxylogo.png)
+![sample-screen.png](https://bitbucket.org/repo/p6xdM7/images/2318018827-oxylogo.png)
 
 
 ### Who am i? ###
