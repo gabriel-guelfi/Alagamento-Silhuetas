@@ -1,15 +1,27 @@
 <?php
 
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//This class receives a dataset, generates a map based on it, then calculates floodables areas, based on this map.//
+*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class FloodFinder{
+	// Holds total floodables areas. Classe's output.
 	private $results;
+	// Holds a list of generated maps.
 	private $maps;
 
+	/*
+	// Instantiates this class, setting up its properties, then starts execution, passing dataset received.
+	*/
 	public function __construct($data){
 		$this->dataResult = [];
 		$this->maps = [];
 		$this->execute($data);
 	}
 
+	/*
+	// Executes calculation creating a map, based on matrix dataset, then finds floodable areas in each map created. Saves results on a list within a property.
+	*/
 	private function execute($data){
 		foreach($data as $d){
 			$map = $this->createMap($d->data);
@@ -20,6 +32,9 @@ class FloodFinder{
 		}
 	}
 
+	/*
+	// Receive a matrix dataset and generates a map, based on it.
+	*/
 	private function createMap($mtx){
 		$width = count($mtx);
 		$height = max($mtx);
@@ -45,6 +60,9 @@ class FloodFinder{
 		return $map;
 	}
 
+	/*
+	// Receives a map, a dataset and a start position. Begins navigating in map, finding each floodable area and count it.
+	*/
 	private function findFloods($map, $mtx, $y, $x){
 		$height = max($mtx);
 
@@ -65,6 +83,9 @@ class FloodFinder{
 		
 	}
 
+	/*
+	// Navigates through a map slice, counting any empty spaces between two barriers. Each space counted is a floodable area. Returns total spaces counted.
+	*/
 	private function countRowFlood($init, $mapRow){
 		$tmp = 0;
 		for($i = $init; $i < count($mapRow); $i++){
@@ -77,6 +98,9 @@ class FloodFinder{
 		return 0;
 	}
 
+	/*
+	// Returns a property value.
+	*/
 	public function _get($varname){
 		return $this->$varname;
 	}

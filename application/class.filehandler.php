@@ -1,10 +1,20 @@
 <?php
 
+/*/////////////////////////////////////////////////////////////////////////////////////////////////
+//This class is responsible for receive a file and format its data to fulfill appliction's needs.//
+*//////////////////////////////////////////////////////////////////////////////////////////////////
+
 class FileHandler{
+	// Holds a Boolean value. If true, some error occurred during file handling execution.
 	private $errorStatus;
+	// If an error occurs during file handling, holds the error's message.
 	private $errorMsg;
+	// Holds the output of this class: a formatted dataset. 
 	private $fileResult;
 
+	/*
+	// Starts this class execution flow. Receives file data, check for errors, then try to format file data to fulfill application's needs.
+	*/
 	public function __construct($filesdata, $index, $allowedExt){
 		if(is_string($allowedExt))
 			$allowedExt = [$allowedExt];
@@ -22,6 +32,9 @@ class FileHandler{
 		}
 	}
 
+	/*
+	// Turns a file, received in parameter, into a formatted dataset, based on its contents, then store it in property.
+	*/
 	private function formatFileData($filedata){
 		$fdata = file($filedata['tmp_name'], FILE_IGNORE_NEW_LINES);
 		$data = [];
@@ -43,10 +56,16 @@ class FileHandler{
 		$this->fileResult = $data;
 	}
 
+	/*
+	// Returns output formatted dataset.
+	*/
 	public function getFileData(){
 		return $this->fileResult;
 	}
 
+	/*
+	// Generated a file based on received data. If a path is specified, try to write the file on disk, else download it.
+	*/
 	public function createFile($data, $fileDir = null, $fileName = null){
 		$filedata = "";
 		foreach($data as $d){
@@ -71,6 +90,9 @@ class FileHandler{
 		}
 	}
 
+	/*
+	// Try to write a file on disk, at the specified path. File's content is passed down by parameter "filecontent".
+	*/
 	private function writeFile($dirpath, $filename, $filecontent){
 		if (!file_exists($dirpath)){
 			mkdir($dirpath, 0755, true);
@@ -88,6 +110,9 @@ class FileHandler{
 		} else return false;
 	}
 
+	/*
+	// Return an object containing error informations.
+	*/
 	public function errorInfo(){
 		return (object) [
 			'status' => $this->errorStatus,
@@ -95,6 +120,9 @@ class FileHandler{
 		];
 	}
 
+	/*
+	// Returns formatted line break, for files, based on Operational System running the application.
+	*/
 	public static function lineBreak(){
 		if(PATH_SEPARATOR == ":")
 			return "\r\n";

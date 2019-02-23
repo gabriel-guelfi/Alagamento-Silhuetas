@@ -1,10 +1,21 @@
 <?php
 
+/*////////////////////////////////////////////////////////////////////////////////////
+//This singleton class is responsible for receive and treat requests to application.//
+*/////////////////////////////////////////////////////////////////////////////////////
+
 class Request{
+
+	// Holds application's root path
 	private $src;
+	// Holds an instance of utility PHPAlert's class
 	private $phpalert;
+	// Holds an instance of this class. (Singleton pattern)
 	private static $instance;
 
+	/*
+	// Instantiates this class, if it isn't, saving it on $instance and return this instance. (Singleton pattern)
+	*/
 	public static function getInstance(){
 		if(self::$instance === null){
 			self::$instance = new self;
@@ -13,6 +24,9 @@ class Request{
 		return self::$instance;
 	}
 
+	/*
+	// Initiates execution starting up a session and setting up some properties, then decides request's flow.
+	*/
 	private function __construct(){
 		session_start();
 		$this->src = $_SERVER['DOCUMENT_ROOT'].'/application/';
@@ -31,15 +45,23 @@ class Request{
 			$this->showView('footer');
 		} 
 	}
-
+	/*
+	// (Singleton pattern)
+	*/
 	private function __clone(){
 		
 	}
 
+	/*
+	// (Singleton pattern)
+	*/
 	private function __wakeup(){
 
 	}
 
+	/*
+	// Renders a view file on the screen.
+	*/
 	public function showView($viewname){
 		ob_start();
 
@@ -54,6 +76,10 @@ class Request{
 		$this->phpalert->show();
 	}
 
+	/* 
+	// This method sends input file to FileHandler class, then insert its result to FindFlood class, that calculates the portion of flood in each case specified at the input file.
+	// After that, sends output, based on user's choice.
+	*/
 	private function execute(){
 		include_once $this->src.'class.filehandler.php';
 
@@ -92,6 +118,9 @@ class Request{
 		}
 	}
 
+	/*
+	// This global method navigates client to a specified URL. It can be called from anywhere within this application.
+	*/
 	public static function navigateToUrl($url, $useHeader = false){
 		if($useHeader)
 			header('Location: '.$url);
